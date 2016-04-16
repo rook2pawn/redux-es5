@@ -1,0 +1,15 @@
+{
+  "name": "redux-es5",
+  "author": "David Wee <rook2pawn@gmail.com> (http://rook2pawn.com)",
+  "version": "1.0.0",
+  "description": "redux es5",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/test*.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "deep-freeze": "0.0.1",
+    "tape": "^4.5.1"
+  }
+}
