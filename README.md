@@ -5,6 +5,23 @@ redux-es5
 
 Redux, es5
 
+Example
+=======
+var hyperx = require('hyperx');
+
+var Todo = function (onClick, completed, text) {
+  return 
+}
+  <li
+    onClick={onClick}
+    style={{
+      textDecoration: completed ? 'line-through' : 'none'
+    }}
+  >
+    {text}
+  </li>
+
+
 Coverage
 ========
 
