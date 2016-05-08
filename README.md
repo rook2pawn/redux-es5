@@ -5,18 +5,18 @@ redux-es5
 
 Redux, with just es5. The tutorial directory lists many examples. 
 
-  * example0.js - shows a demonstration of the redux-es5 store with a manual overall reducer
-  * example1.js - shows the same thing but utilizes the redux-es5 combineReducers
-  * example1-react.js - shows the view layer as expressed as React without JSX while still rendering via fully fledged React Components utilizing [hyperx](https://github.com/substack/hyperx)
-  * example1-react-withoutClass.js - same thing as example1-react but utilizing the polyfill equivalent for es6 extends.
+  * tutorial/example0.js - shows a demonstration of the redux-es5 store with a manual overall reducer
+  * tutorial/example1.js - shows the same thing but utilizes the redux-es5 combineReducers
+  * tutorial/example1-react.js - shows the view layer as expressed as React without JSX while still rendering via fully fledged React Components utilizing [hyperx](https://github.com/substack/hyperx)
+  * tutorial/example1-react-withoutClass.js - same thing as example1-react but utilizing the polyfill equivalent for es6 extends.
+  * tutorial/index-example1-react-withoutClass.html you can open this in your web browser to demonstrate the functionality. Compiled via browserify!
 
 Example
 =======
 
 
-    var redux = require('../')
+    var redux = require('redux-es5')
     var react = require('react')
-    var toString = require('react-dom/server').renderToString;
     var reactdom = require('react-dom');
     var hyperx = require('hyperx')
     var hx = hyperx(react.createElement)
