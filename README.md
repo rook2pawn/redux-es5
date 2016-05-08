@@ -9,14 +9,18 @@ Redux, with just es5. The tutorial directory lists many examples.
   * [tutorial/example1.js](../master/tutorial/example1.js)  - shows the same thing but utilizes the redux-es5 combineReducers
   * [tutorial/example1-react.js](../master/tutorial/example1-react.js)  - shows the view layer as expressed as React without JSX while still rendering via fully fledged React Components utilizing [hyperx](https://github.com/substack/hyperx)
   * [tutorial/example1-react-withoutClass.js](../master/tutorial/example1-react-withoutClass.js) - same thing as example1-react but utilizing the polyfill equivalent for es6 extends.
-  * [tutorial/index-example1-react-withoutClass.html](../master/tutorial/index-example1-react-withoutClass.html) you can open this in your web browser to demonstrate the functionality. Compiled via browserify.
+  * [tutorial/example2-react.js](../master/tutorial/example2-react.js) - Adds clicking on an item to mark it as completed.
+  * [tutorial/example3-react.js](../master/tutorial/example3-react.js) - Adds a filter to show All, show active, and show completed.
+  * [tutorial/index-example1-react-withoutClass.html](../master/tutorial/index-example1-react-withoutClass.html) you can open this in your web browser to demonstrate the functionality: adding an element to a list. Compiled via browserify.
+  * [tutorial/index-example2.html](../master/tutorial/index-example2.html) demonstrate the functionality: adding an element to a list, clicking on an item to mark it as completed. 
+  * [tutorial/index-example3.html](../master/tutorial/index-example3.html) demonstrate the functionality: adding an element to a list, clicking on an item to mark it as completed, and adding a filter to show All, show active, and show completed.
 
 Example
 =======
 
-
     var redux = require('redux-es5')
     var react = require('react')
+    var toString = require('react-dom/server').renderToString;
     var reactdom = require('react-dom');
     var hyperx = require('hyperx')
     var hx = hyperx(react.createElement)
@@ -82,14 +86,39 @@ Example
     });
     var createStore = redux.createStore;
     var store = createStore(todoApp)
-    var Component = react.Component;
+
+    var getVisibleTodos = function(todos,filter) {
+      switch (filter) {
+        case 'SHOW_ALL' :
+          return todos
+        case 'SHOW_COMPLETED' :
+          return todos.filter(function(t) { return t.completed })
+        case 'SHOW_ACTIVE' :
+          return todos.filter(function(t) { return !t.completed })
+        default:
+          break;
+      }
+    }
+    var FilterLink = react.createClass({
+      render: function() {
+        var that = this;
+        if (this.props.filter === this.props.currentFilter) {
+          return hx`<span>${this.props.children}</span>`
+        }
+        return hx`<a href='#' onClick=${ function(e) {
+        e.preventDefault();
+        store.dispatch({
+          type:'SET_VISIBILITY_FILTER',
+          filter:that.props.filter
+        })}}>${this.props.children}</a>`;
+      }
+    })
+
     var nextTodoId = 0;
     var myinput;
-
-
-    var TodoApp = function() {
-      Component.call(this);
-      this.render = function() {
+    var TodoApp = react.createClass({
+      render : function() {
+        var visibleTodos = getVisibleTodos(this.props.todos,this.props.visibilityFilter);
         return hx`<div><div>
           <input ref=${function(node) {
             myinput = node 
@@ -104,24 +133,31 @@ Example
           }}> Add Todo</button>
         </div>
         <ul>
-          ${this.props.todos.map(function(todo) {
-            return hx`<li key=${todo.id}>${todo.text}</li>`
+          ${visibleTodos.map(function(todo) {
+            return hx`<li key=${todo.id} onClick=${function() {
+              store.dispatch({
+                type:'TOGGLE_TODO',
+                id:todo.id
+              })
+             }} style=${{textDecoration:todo.completed ? 'line-through':'none'}}>${todo.text}</li>`
           })}
         </ul>
+        Show ${' '} 
+        ${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All',currentFilter:this.props.visibilityFilter})}
+        ${react.createElement(FilterLink,{filter:'SHOW_ACTIVE',children:'Active',currentFilter:this.props.visibilityFilter})}
+        ${react.createElement(FilterLink,{filter:'SHOW_COMPLETED',children:'Completed',currentFilter:this.props.visibilityFilter})}
         </div>`
       }
-    }
-    TodoApp.prototype = Object.create(Component.prototype);
-    TodoApp.prototype.constructor = Component;
+    });
 
-    var Factory = react.createFactory(TodoApp)
     var render = function() {
-      var root = Factory({todos:store.getState().todos})
-      reactdom.render(root, document.querySelector('#content'))
+      reactdom.render(react.createElement(TodoApp, {
+        todos:store.getState().todos,
+        visibilityFilter:store.getState().visibilityFilter
+      }),document.querySelector('#content'))
     }
     store.subscribe(render)
     render()
-
 
 
 Coverage
