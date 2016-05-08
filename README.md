@@ -11,13 +11,16 @@ Redux, with just es5. The tutorial directory lists many examples.
   * [tutorial/example1-react-withoutClass.js](../master/tutorial/example1-react-withoutClass.js) - same thing as example1-react but utilizing the polyfill equivalent for es6 extends.
   * [tutorial/example2-react.js](../master/tutorial/example2-react.js) - Adds clicking on an item to mark it as completed.
   * [tutorial/example3-react.js](../master/tutorial/example3-react.js) - Adds a filter to show All, show active, and show completed.
+  * [tutorial/example4-react.js](../master/tutorial/example4-react.js) - Refactor demonstrating nested classes and presentational components.
   * [tutorial/index-example1-react-withoutClass.html](../master/tutorial/index-example1-react-withoutClass.html) you can open this in your web browser to demonstrate the functionality: adding an element to a list. Compiled via browserify.
   * [tutorial/index-example2.html](../master/tutorial/index-example2.html) demonstrate the functionality: adding an element to a list, clicking on an item to mark it as completed. 
   * [tutorial/index-example3.html](../master/tutorial/index-example3.html) demonstrate the functionality: adding an element to a list, clicking on an item to mark it as completed, and adding a filter to show All, show active, and show completed.
+  * [tutorial/index-example4.html](../master/tutorial/index-example4.html) demonstrates the first refactor: abstracting the presentational components.
 
 Example
 =======
-*taken from [tutorial/example3-react.js](../master/tutorial/example3-react.js)*
+*taken from [tutorial/example4-react.js](../master/tutorial/example4-react.js)*
+
 
     var redux = require('redux-es5')
     var react = require('react')
@@ -25,6 +28,9 @@ Example
     var reactdom = require('react-dom');
     var hyperx = require('hyperx')
     var hx = hyperx(react.createElement)
+
+    var nextTodoId = 0;
+    var myinput;
 
     var todo = function(state,action) {
       switch (action.type) {
@@ -108,45 +114,87 @@ Example
         }
         return hx`<a href='#' onClick=${ function(e) {
         e.preventDefault();
-        store.dispatch({
-          type:'SET_VISIBILITY_FILTER',
-          filter:that.props.filter
-        })}}>${this.props.children}</a>`;
+        that.props.onClick(that.props.filter);
+        }}>${this.props.children}</a>`;
       }
     })
 
-    var nextTodoId = 0;
-    var myinput;
-    var TodoApp = react.createClass({
-      render : function() {
-        var visibleTodos = getVisibleTodos(this.props.todos,this.props.visibilityFilter);
-        return hx`<div><div>
+
+    var Todo = react.createClass({
+      render: function() { 
+        var that = this;
+        return hx`<li onClick=${that.props.onClick}
+        style=${{textDecoration:that.props.completed ? 'line-through':'none'}}>${this.props.text}</li>`
+      }
+    })
+    var TodoList = react.createClass({
+      render: function() {
+        var that = this;
+        return hx`<ul>
+        ${this.props.todos.map(function(todo) {
+          return react.createElement(Todo,{
+            onClick:function() { 
+              that.props.onTodoClick(todo.id);
+            },
+            completed:todo.completed,
+            text:todo.text
+          })
+        })}
+        </ul>`
+      } 
+    })
+
+    var AddTodo = react.createClass({
+      render: function() {
+        var that = this;
+        return hx`<div>
           <input ref=${function(node) {
             myinput = node 
           }} />
           <button onClick=${function() {
+            that.props.onAddClick(myinput.value);
+          }}> Add Todo</button>
+        </div>`
+      }
+    })  
+    var Footer = react.createClass({
+      render: function() {
+        return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All',currentFilter:this.props.visibilityFilter,onClick:this.props.onFilterClick})}
+        ${react.createElement(FilterLink,{filter:'SHOW_ACTIVE',children:'Active',currentFilter:this.props.visibilityFilter,onClick:this.props.onFilterClick})}
+        ${react.createElement(FilterLink,{filter:'SHOW_COMPLETED',children:'Completed',currentFilter:this.props.visibilityFilter,onClick:this.props.onFilterClick})}</div>`
+      }
+    })
+
+    var TodoApp = react.createClass({
+      render : function() {
+        return hx`<div>
+        ${react.createElement(AddTodo,{
+          onAddClick:function(text) {
             store.dispatch({
               type:'ADD_TODO',
-              text:myinput.value,
-              id:nextTodoId++
-            });
-            myinput.value = '';
-          }}> Add Todo</button>
-        </div>
-        <ul>
-          ${visibleTodos.map(function(todo) {
-            return hx`<li key=${todo.id} onClick=${function() {
-              store.dispatch({
-                type:'TOGGLE_TODO',
-                id:todo.id
-              })
-             }} style=${{textDecoration:todo.completed ? 'line-through':'none'}}>${todo.text}</li>`
-          })}
-        </ul>
+              id:nextTodoId++,
+              text:text
+            })
+          }  
+        })}
+        ${react.createElement(TodoList,{
+          onTodoClick:function(id) {
+            store.dispatch({
+              type:'TOGGLE_TODO',
+              id: id
+            })
+          },
+          todos:getVisibleTodos(this.props.todos,this.props.visibilityFilter)
+        })}
         Show ${' '} 
-        ${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All',currentFilter:this.props.visibilityFilter})}
-        ${react.createElement(FilterLink,{filter:'SHOW_ACTIVE',children:'Active',currentFilter:this.props.visibilityFilter})}
-        ${react.createElement(FilterLink,{filter:'SHOW_COMPLETED',children:'Completed',currentFilter:this.props.visibilityFilter})}
+        ${react.createElement(Footer,{
+          onFilterClick: function(filter) {
+            store.dispatch({
+              type:'SET_VISIBILITY_FILTER',
+              filter:filter
+            })
+          },
+          visibilityFilter:this.props.visibilityFilter})}
         </div>`
       }
     });
@@ -159,6 +207,7 @@ Example
     }
     store.subscribe(render)
     render()
+
 
 
 Coverage
