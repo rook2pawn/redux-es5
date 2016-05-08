@@ -5,11 +5,11 @@ redux-es5
 
 Redux, with just es5. The tutorial directory lists many examples. 
 
-  * tutorial/example0.js - shows a demonstration of the redux-es5 store with a manual overall reducer
-  * tutorial/example1.js - shows the same thing but utilizes the redux-es5 combineReducers
-  * tutorial/example1-react.js - shows the view layer as expressed as React without JSX while still rendering via fully fledged React Components utilizing [hyperx](https://github.com/substack/hyperx)
-  * tutorial/example1-react-withoutClass.js - same thing as example1-react but utilizing the polyfill equivalent for es6 extends.
-  * tutorial/index-example1-react-withoutClass.html you can open this in your web browser to demonstrate the functionality. Compiled via browserify!
+  * [tutorial/example0.js](../master/tutorial/example0.js) - shows a demonstration of the redux-es5 store with a manual overall reducer
+  * [tutorial/example1.js](../master/tutorial/example1.js)  - shows the same thing but utilizes the redux-es5 combineReducers
+  * [tutorial/example1-react.js](../master/tutorial/example1-react.js)  - shows the view layer as expressed as React without JSX while still rendering via fully fledged React Components utilizing [hyperx](https://github.com/substack/hyperx)
+  * [tutorial/example1-react-withoutClass.js](../master/tutorial/example1-react-withoutClass.js) - same thing as example1-react but utilizing the polyfill equivalent for es6 extends.
+  * [tutorial/index-example1-react-withoutClass.html](../master/tutorial/index-example1-react-withoutClass.html) you can open this in your web browser to demonstrate the functionality. Compiled via browserify.
 
 Example
 =======
