@@ -12,10 +12,8 @@ Redux, with just es5. The tutorial directory lists many examples.
   * [tutorial/example2-react.js](../master/tutorial/example2-react.js) - Adds clicking on an item to mark it as completed.
   * [tutorial/example3-react.js](../master/tutorial/example3-react.js) - Adds a filter to show All, show active, and show completed.
   * [tutorial/example4-react.js](../master/tutorial/example4-react.js) - Refactor demonstrating nested classes and presentational components.
-  * [tutorial/index-example1-react-withoutClass.html](../master/tutorial/index-example1-react-withoutClass.html) you can open this in your web browser to demonstrate the functionality: adding an element to a list. Compiled via browserify.
-  * [tutorial/index-example2.html](../master/tutorial/index-example2.html) demonstrate the functionality: adding an element to a list, clicking on an item to mark it as completed. 
-  * [tutorial/index-example3.html](../master/tutorial/index-example3.html) demonstrate the functionality: adding an element to a list, clicking on an item to mark it as completed, and adding a filter to show All, show active, and show completed.
-  * [tutorial/index-example4.html](../master/tutorial/index-example4.html) demonstrates the first refactor: abstracting the presentational components.
+
+You can open the corresponding html pages (e.g. [tutorial/index-example4.html](../master/tutorial/index-example4.html) )in the tutorial to see it in action. Precompiled with [browserify](https://github.com/substack/browserify)
 
 Example
 =======
