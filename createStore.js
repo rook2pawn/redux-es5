@@ -19,8 +19,9 @@ var createStore = function(reducer) {
     return state
   }
   var dispatch = function(action) {
+    //console.log('action:', action)
     state = reducer(state,action)
-    console.log("New state:", state)
+    //console.log("New state:", state)
     listeners.forEach(function(listener) {
       listener();
     })
