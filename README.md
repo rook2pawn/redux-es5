@@ -17,6 +17,7 @@ Redux, with just es5. The tutorial directory lists many examples.
 
 Example
 =======
+*taken from [tutorial/example3-react.js](../master/tutorial/example3-react.js)*
 
     var redux = require('redux-es5')
     var react = require('react')
