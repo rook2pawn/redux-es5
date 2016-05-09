@@ -24,7 +24,6 @@ Example
 
     var redux = require('redux-es5')
     var react = require('react')
-    var toString = require('react-dom/server').renderToString;
     var reactdom = require('react-dom');
     var hyperx = require('hyperx')
     var hx = hyperx(react.createElement)
