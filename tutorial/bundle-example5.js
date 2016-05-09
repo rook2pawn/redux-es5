@@ -20139,16 +20139,41 @@ var getVisibleTodos = function(todos,filter) {
       break;
   }
 }
-var FilterLink = react.createClass({
+var Link = react.createClass({
   render: function() {
     var that = this;
-    if (this.props.filter === this.props.currentFilter) {
+    if (this.props.active) {
       return hx`<span>${this.props.children}</span>`
     }
     return hx`<a href='#' onClick=${ function(e) {
     e.preventDefault();
-    that.props.onClick(that.props.filter);
+    that.props.onClick();
     }}>${this.props.children}</a>`;
+  }
+})
+
+var FilterLink = react.createClass({
+  componentDidMount:function() {
+    var that = this;
+    this.unsubscribe = store.subscribe(function() {
+      that.forceUpdate()
+    })
+  },
+  comonentWillUnmount:function() {
+    this.unsubscribe();
+  },
+  render: function() {
+    var props = this.props;
+    var state = store.getState();
+    return hx`${react.createElement(Link, {
+      active:(props.filter===state.visibilityFilter),
+      onClick:function() {
+        store.dispatch({
+          type:'SET_VISIBILITY_FILTER', 
+          filter:props.filter
+        })
+      },
+      children:props.children})}`
   }
 })
 
@@ -20185,6 +20210,14 @@ var AddTodo = react.createClass({
         myinput = node 
       }} />
       <button onClick=${function() {
+        store.dispatch({
+          type:'ADD_TODO',
+          id:nextTodoId++,
+          text:myinput.value
+        })
+        myinput.value='';
+      }  
+    })}
         that.props.onAddClick(myinput.value);
       }}> Add Todo</button>
     </div>`
@@ -20192,54 +20225,47 @@ var AddTodo = react.createClass({
 })  
 var Footer = react.createClass({
   render: function() {
-    return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All',currentFilter:this.props.visibilityFilter,onClick:this.props.onFilterClick})}
-    ${react.createElement(FilterLink,{filter:'SHOW_ACTIVE',children:'Active',currentFilter:this.props.visibilityFilter,onClick:this.props.onFilterClick})}
-    ${react.createElement(FilterLink,{filter:'SHOW_COMPLETED',children:'Completed',currentFilter:this.props.visibilityFilter,onClick:this.props.onFilterClick})}</div>`
+    return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All'})}
+    ${react.createElement(FilterLink,{filter:'SHOW_ACTIVE',children:'Active'})}
+    ${react.createElement(FilterLink,{filter:'SHOW_COMPLETED',children:'Completed'})}</div>`
+  }
+})
+
+var VisibleTodoList = react.createClass({
+  componentDidMount:function() {
+    var that = this;
+    this.unsubscribe = store.subscribe(function() {
+      that.forceUpdate()
+    })
+  },
+  comonentWillUnmount:function() {
+    this.unsubscribe();
+  },
+  render: function() {
+    var props = this.props;
+    var state = store.getState();
+    return hx`${react.createElement(TodoList,{
+      todos:getVisibleTodos(state.todos,state.visibilityFilter),
+      onTodoClick:function(id) {
+        store.dispatch({
+          type:'TOGGLE_TODO',
+          id:id
+        })
+      }})}`
   }
 })
 
 var TodoApp = react.createClass({
   render : function() {
     return hx`<div>
-    ${react.createElement(AddTodo,{
-      onAddClick:function(text) {
-        store.dispatch({
-          type:'ADD_TODO',
-          id:nextTodoId++,
-          text:text
-        })
-        myinput.value='';
-      }  
-    })}
-    ${react.createElement(TodoList,{
-      onTodoClick:function(id) {
-        store.dispatch({
-          type:'TOGGLE_TODO',
-          id: id
-        })
-      },
-      todos:getVisibleTodos(this.props.todos,this.props.visibilityFilter)
-    })}
+    ${react.createElement(AddTodo)}
+    ${react.createElement(VisibleTodoList)}
     Show ${' '} 
-    ${react.createElement(Footer,{
-      onFilterClick: function(filter) {
-        store.dispatch({
-          type:'SET_VISIBILITY_FILTER',
-          filter:filter
-        })
-      },
-      visibilityFilter:this.props.visibilityFilter})}
+    ${react.createElement(Footer)}
     </div>`
   }
 });
 
-var render = function() {
-  reactdom.render(react.createElement(TodoApp, {
-    todos:store.getState().todos,
-    visibilityFilter:store.getState().visibilityFilter
-  }),document.querySelector('#content'))
-}
-store.subscribe(render)
-render()
+reactdom.render(react.createElement(TodoApp),document.querySelector('#content'))
 
 },{"../":4,"hyperx":32,"react":177,"react-dom":34,"react-dom/server":35}]},{},[179]);
