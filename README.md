@@ -3,7 +3,16 @@
 redux-es5
 =========
 
-Redux, with just es5. The tutorial directory lists many examples. 
+Redux, with just es5. 
+
+Intro
+=====
+
+See the [example](../master/example) directory for a fully separated component app backed with connect on the redux-es5 store.
+
+You can open the [the web page](../master/example/index.html) in your browser to see the application in action. Compiled with [browserify](https://github.com/substack/browserify)
+
+The [tutorial](../master/tutorial) directory has many examples
 
   * [tutorial/example0.js](../master/tutorial/example0.js) - shows a demonstration of the redux-es5 store with a manual overall reducer
   * [tutorial/example1.js](../master/tutorial/example1.js)  - shows the same thing but utilizes the redux-es5 combineReducers
@@ -13,9 +22,9 @@ Redux, with just es5. The tutorial directory lists many examples.
   * [tutorial/example3-react.js](../master/tutorial/example3-react.js) - Adds a filter to show All, show active, and show completed.
   * [tutorial/example4-react.js](../master/tutorial/example4-react.js) - Refactor demonstrating nested classes and presentational components.
   * [tutorial/example5-react.js](../master/tutorial/example5-react.js) - Refactor demonstrating more separation of container and presentational components.
-  * [tutorial/example6-react.js](../master/tutorial/example6-react.js) - Demonstrates the connect binding. Currently supports React Components, more coming soon!
+  * [tutorial/example6-react.js](../master/tutorial/example6-react.js) - Demonstrates the connect binding. Currently supports React Components, more on the way.
 
-You can open the corresponding html pages (e.g. [tutorial/index-example4.html](../master/tutorial/index-example4.html) )in the tutorial to see it in action. Precompiled with [browserify](https://github.com/substack/browserify)
+You can open the corresponding html pages (e.g. [tutorial/index-example4.html](../master/tutorial/index-example4.html) )in the tutorial to see it in action.
 
 Example
 =======
