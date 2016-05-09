@@ -121,16 +121,19 @@ var objectAssign = require('object-assign')
 var hyperx = require('hyperx')
 var hx = hyperx(react.createElement)
 var connect = function(store) {
+  if (!store) {
+    throw new Error("Store is undefined")
+  }
   return function(mapStateToProps,mapDispatchToProps) {
     return function(component) {
       var state = store.getState();
       var _props1 = mapStateToProps(state);
-      var _props2 = mapDispatchToProps(state);
+      var _props2 = mapDispatchToProps(store.dispatch);
       var props = objectAssign(_props1,_props2)
       store.subscribe(function() {
         var state = store.getState();
         _props1 = mapStateToProps(state);
-        _props2 = mapDispatchToProps(state);
+        _props2 = mapDispatchToProps(store.dispatch);
         props = objectAssign(_props1,_props2)
       })
       return react.createClass({
@@ -20099,6 +20102,7 @@ var toString = require('react-dom/server').renderToString;
 var reactdom = require('react-dom');
 var hyperx = require('hyperx')
 var hx = hyperx(react.createElement)
+var createStore = redux.createStore;
 
 var nextTodoId = 0;
 var myinput;
@@ -20162,9 +20166,11 @@ var todoApp = combineReducers({
   todos:todos,
   visibilityFilter:visibilityFilter
 });
-var createStore = redux.createStore;
 var store = createStore(todoApp)
+var connect = redux.connect(store);
 
+// end of model layer
+//view layer
 var getVisibleTodos = function(todos,filter) {
   switch (filter) {
     case 'SHOW_ALL' :
@@ -20248,7 +20254,7 @@ var AddTodo = react.createClass({
         myinput = node 
       }} />
       <button onClick=${function() {
-        store.dispatch({
+        that.props.dispatch({
           type:'ADD_TODO',
           id:nextTodoId++,
           text:myinput.value
@@ -20258,6 +20264,11 @@ var AddTodo = react.createClass({
     </div>`
   }
 })  
+AddTodo = connect(function(state) {
+  return {}
+}, function(dispatch) {
+  return {dispatch:dispatch}
+})(AddTodo);
 var Footer = react.createClass({
   render: function() {
     return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All'})}
@@ -20277,7 +20288,7 @@ var mapStateToProps = function(state) {
 var mapDispatchToProps = function(dispatch) {
   return {
     onTodoClick: function(id) {
-      store.dispatch({
+      dispatch({
           type:'TOGGLE_TODO',
           id:id
       })
@@ -20285,7 +20296,6 @@ var mapDispatchToProps = function(dispatch) {
   }
 }
 
-var connect = redux.connect(store);
 var VisibleTodoList = connect(mapStateToProps,mapDispatchToProps)(TodoList)
 var TodoApp = react.createClass({
   render : function() {

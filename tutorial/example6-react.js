@@ -4,6 +4,7 @@ var toString = require('react-dom/server').renderToString;
 var reactdom = require('react-dom');
 var hyperx = require('hyperx')
 var hx = hyperx(react.createElement)
+var createStore = redux.createStore;
 
 var nextTodoId = 0;
 var myinput;
@@ -67,9 +68,11 @@ var todoApp = combineReducers({
   todos:todos,
   visibilityFilter:visibilityFilter
 });
-var createStore = redux.createStore;
 var store = createStore(todoApp)
+var connect = redux.connect(store);
 
+// end of model layer
+//view layer
 var getVisibleTodos = function(todos,filter) {
   switch (filter) {
     case 'SHOW_ALL' :
@@ -153,7 +156,7 @@ var AddTodo = react.createClass({
         myinput = node 
       }} />
       <button onClick=${function() {
-        store.dispatch({
+        that.props.dispatch({
           type:'ADD_TODO',
           id:nextTodoId++,
           text:myinput.value
@@ -163,6 +166,11 @@ var AddTodo = react.createClass({
     </div>`
   }
 })  
+AddTodo = connect(function(state) {
+  return {}
+}, function(dispatch) {
+  return {dispatch:dispatch}
+})(AddTodo);
 var Footer = react.createClass({
   render: function() {
     return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All'})}
@@ -182,7 +190,7 @@ var mapStateToProps = function(state) {
 var mapDispatchToProps = function(dispatch) {
   return {
     onTodoClick: function(id) {
-      store.dispatch({
+      dispatch({
           type:'TOGGLE_TODO',
           id:id
       })
@@ -190,7 +198,6 @@ var mapDispatchToProps = function(dispatch) {
   }
 }
 
-var connect = redux.connect(store);
 var VisibleTodoList = connect(mapStateToProps,mapDispatchToProps)(TodoList)
 var TodoApp = react.createClass({
   render : function() {
