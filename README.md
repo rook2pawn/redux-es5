@@ -3,7 +3,7 @@
 redux-es5
 =========
 
-Redux, with just es5. 
+Redux, with just es5. Fully supports connect bindings to React.
 
 Intro
 =====
