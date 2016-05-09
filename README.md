@@ -19,8 +19,7 @@ You can open the corresponding html pages (e.g. [tutorial/index-example4.html](.
 
 Example
 =======
-*taken from [tutorial/example5-react.js](../master/tutorial/example5-react.js)*
-
+*taken from [tutorial/example6-react.js](../master/tutorial/example6-react.js)*
 
 
     var redux = require('redux-es5')
@@ -29,6 +28,7 @@ Example
     var reactdom = require('react-dom');
     var hyperx = require('hyperx')
     var hx = hyperx(react.createElement)
+    var createStore = redux.createStore;
 
     var nextTodoId = 0;
     var myinput;
@@ -92,8 +92,33 @@ Example
       todos:todos,
       visibilityFilter:visibilityFilter
     });
-    var createStore = redux.createStore;
     var store = createStore(todoApp)
+    // end of model layer
+
+    //view layer
+    var connect = redux.connect(store);
+
+
+    var AddTodo = react.createClass({
+      render: function() {
+        var that = this;
+        return hx`<div>
+          <input ref=${function(node) {
+            myinput = node 
+          }} />
+          <button onClick=${function() {
+            that.props.dispatch({
+              type:'ADD_TODO',
+              id:nextTodoId++,
+              text:myinput.value
+            })
+            myinput.value='';
+          }}> Add Todo </button>
+        </div>`
+      }
+    })  
+    AddTodo = connect(null, null)(AddTodo);
+
 
     var getVisibleTodos = function(todos,filter) {
       switch (filter) {
@@ -107,45 +132,6 @@ Example
           break;
       }
     }
-    var Link = react.createClass({
-      render: function() {
-        var that = this;
-        if (this.props.active) {
-          return hx`<span>${this.props.children}</span>`
-        }
-        return hx`<a href='#' onClick=${ function(e) {
-        e.preventDefault();
-        that.props.onClick();
-        }}>${this.props.children}</a>`;
-      }
-    })
-
-    var FilterLink = react.createClass({
-      componentDidMount:function() {
-        var that = this;
-        this.unsubscribe = store.subscribe(function() {
-          that.forceUpdate()
-        })
-      },
-      comonentWillUnmount:function() {
-        this.unsubscribe();
-      },
-      render: function() {
-        var props = this.props;
-        var state = store.getState();
-        return hx`${react.createElement(Link, {
-          active:(props.filter===state.visibilityFilter),
-          onClick:function() {
-            store.dispatch({
-              type:'SET_VISIBILITY_FILTER', 
-              filter:props.filter
-            })
-          },
-          children:props.children})}`
-      }
-    })
-
-
     var Todo = react.createClass({
       render: function() { 
         var that = this;
@@ -169,57 +155,58 @@ Example
         </ul>`
       } 
     })
+    var mapStateToProps = function(state) {
+      return {
+        todos: getVisibleTodos(state.todos,state.visibilityFilter)
+      }
+    }
+    var mapDispatchToProps = function(dispatch) {
+      return {
+        onTodoClick: function(id) {
+          dispatch({
+              type:'TOGGLE_TODO',
+              id:id
+          })
+        }
+      }
+    }
+    var VisibleTodoList = connect(mapStateToProps,mapDispatchToProps)(TodoList)
 
-    var AddTodo = react.createClass({
+
+
+
+    var Link = react.createClass({
       render: function() {
         var that = this;
-        return hx`<div>
-          <input ref=${function(node) {
-            myinput = node 
-          }} />
-          <button onClick=${function() {
-            store.dispatch({
-              type:'ADD_TODO',
-              id:nextTodoId++,
-              text:myinput.value
-            })
-            myinput.value='';
-          }  
-        })}
-            that.props.onAddClick(myinput.value);
-          }}> Add Todo</button>
-        </div>`
+        if (this.props.active) {
+          return hx`<span>${this.props.children}</span>`
+        }
+        return hx`<a href='#' onClick=${ function(e) {
+        e.preventDefault();
+        that.props.onClick();
+        }}>${this.props.children}</a>`;
       }
-    })  
+    })
+    var FilterLink = connect(function(state,ownProps) {
+      return {
+        active : (ownProps.filter === state.visibilityFilter),
+        children : ownProps.children
+      }
+    },function(dispatch,ownProps) {
+      return {
+        onClick: function() {
+          dispatch({
+            type:'SET_VISIBILITY_FILTER',
+            filter:ownProps.filter
+          })
+        }
+      }
+    })(Link)
     var Footer = react.createClass({
       render: function() {
         return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All'})}
         ${react.createElement(FilterLink,{filter:'SHOW_ACTIVE',children:'Active'})}
         ${react.createElement(FilterLink,{filter:'SHOW_COMPLETED',children:'Completed'})}</div>`
-      }
-    })
-
-    var VisibleTodoList = react.createClass({
-      componentDidMount:function() {
-        var that = this;
-        this.unsubscribe = store.subscribe(function() {
-          that.forceUpdate()
-        })
-      },
-      comonentWillUnmount:function() {
-        this.unsubscribe();
-      },
-      render: function() {
-        var props = this.props;
-        var state = store.getState();
-        return hx`${react.createElement(TodoList,{
-          todos:getVisibleTodos(state.todos,state.visibilityFilter),
-          onTodoClick:function(id) {
-            store.dispatch({
-              type:'TOGGLE_TODO',
-              id:id
-            })
-          }})}`
       }
     })
 
@@ -235,7 +222,6 @@ Example
     });
 
     reactdom.render(react.createElement(TodoApp),document.querySelector('#content'))
-
 
 
 Coverage
