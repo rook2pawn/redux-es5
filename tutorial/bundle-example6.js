@@ -129,7 +129,6 @@ var connect = function(store) {
       var props = objectAssign(_props1,_props2)
       store.subscribe(function() {
         var state = store.getState();
-        console.log("STATE:", state)
         _props1 = mapStateToProps(state);
         _props2 = mapDispatchToProps(state);
         props = objectAssign(_props1,_props2)
@@ -20255,10 +20254,7 @@ var AddTodo = react.createClass({
           text:myinput.value
         })
         myinput.value='';
-      }  
-    })}
-        that.props.onAddClick(myinput.value);
-      }}> Add Todo</button>
+      }}> Add Todo </button>
     </div>`
   }
 })  

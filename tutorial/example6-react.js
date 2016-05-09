@@ -159,10 +159,7 @@ var AddTodo = react.createClass({
           text:myinput.value
         })
         myinput.value='';
-      }  
-    })}
-        that.props.onAddClick(myinput.value);
-      }}> Add Todo</button>
+      }}> Add Todo </button>
     </div>`
   }
 })  
