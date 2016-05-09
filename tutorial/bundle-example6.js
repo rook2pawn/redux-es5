@@ -127,15 +127,22 @@ var connect = function(store) {
   return function(mapStateToProps,mapDispatchToProps) {
     return function(component) {
       var state = store.getState();
-      var _props1 = mapStateToProps(state);
-      var _props2 = mapDispatchToProps(store.dispatch);
-      var props = objectAssign(_props1,_props2)
-      store.subscribe(function() {
-        var state = store.getState();
+      var _props1 = {};
+      var _props2 = {};
+      if (mapStateToProps) 
         _props1 = mapStateToProps(state);
+      if (mapDispatchToProps)
         _props2 = mapDispatchToProps(store.dispatch);
-        props = objectAssign(_props1,_props2)
-      })
+      else 
+        _props2 = { dispatch : store.dispatch }
+      var props = objectAssign(_props1,_props2)
+      if (mapStateToProps) {
+        store.subscribe(function() {
+          var state = store.getState();
+          var _props1 = mapStateToProps(state);
+          props = objectAssign(_props1,_props2)
+        })
+      }
       return react.createClass({
         componentDidMount:function() {
           var that = this;
@@ -20264,11 +20271,7 @@ var AddTodo = react.createClass({
     </div>`
   }
 })  
-AddTodo = connect(function(state) {
-  return {}
-}, function(dispatch) {
-  return {dispatch:dispatch}
-})(AddTodo);
+AddTodo = connect(null, null)(AddTodo);
 var Footer = react.createClass({
   render: function() {
     return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All'})}

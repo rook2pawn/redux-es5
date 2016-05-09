@@ -166,11 +166,7 @@ var AddTodo = react.createClass({
     </div>`
   }
 })  
-AddTodo = connect(function(state) {
-  return {}
-}, function(dispatch) {
-  return {dispatch:dispatch}
-})(AddTodo);
+AddTodo = connect(null, null)(AddTodo);
 var Footer = react.createClass({
   render: function() {
     return hx`<div>${react.createElement(FilterLink,{filter:'SHOW_ALL',children:'All'})}
