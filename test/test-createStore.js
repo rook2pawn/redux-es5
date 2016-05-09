@@ -45,7 +45,7 @@ test('getState - dispatch test', function(t) {
 
 
 
-test.only('getState - dispatch test with combineReducers', function(t) {
+test('getState - dispatch test with combineReducers', function(t) {
   var reducer = function(state,action) {
     if (state === undefined) {
       state = []
