@@ -1,4 +1,4 @@
-var combineReducers = require('../combineReducers')
+var combineReducers = require('../lib/combineReducers')
 var deepFreeze = require('deep-freeze')
 var test = require('tape')
 

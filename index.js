@@ -1,3 +1,4 @@
-exports.createStore = require('./createStore')
-exports.combineReducers = require('./combineReducers')
-exports.polyfill = require('./polyfill')
+exports.createStore = require('./lib/createStore')
+exports.combineReducers = require('./lib/combineReducers')
+exports.connect = require('./lib/connect')
+exports.polyfill = require('./lib/polyfill')

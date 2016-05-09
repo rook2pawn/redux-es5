@@ -5,14 +5,15 @@
   "description": "redux es5",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/test*.js"
+    "test": "tape $(find test -name '*.js')"
   },
   "license": "MIT",
   "devDependencies": {
-    "deep-freeze": "0.0.1",
-    "tape": "^4.5.1"
+    "deep-freeze": "0.0.1"
   },
   "dependencies": {
-    "hyperx": "^2.0.3"
+    "hyperx": "^2.0.3",
+    "object-assign": "^4.1.0",
+    "tape": "^4.5.1"
   }
 }

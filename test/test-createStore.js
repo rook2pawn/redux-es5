@@ -1,5 +1,5 @@
-var createStore = require('../createStore');
-var combineReducers = require('../combineReducers');
+var createStore = require('../lib/createStore');
+var combineReducers = require('../lib/combineReducers');
 var test = require('tape');
 
 
