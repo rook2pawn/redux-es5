@@ -12,7 +12,8 @@ Redux, with just es5. The tutorial directory lists many examples.
   * [tutorial/example2-react.js](../master/tutorial/example2-react.js) - Adds clicking on an item to mark it as completed.
   * [tutorial/example3-react.js](../master/tutorial/example3-react.js) - Adds a filter to show All, show active, and show completed.
   * [tutorial/example4-react.js](../master/tutorial/example4-react.js) - Refactor demonstrating nested classes and presentational components.
-  * [tutorial/example5-react.js](../master/tutorial/example4-react.js) - Refactor demonstrating more separation of container and presentational components.
+  * [tutorial/example5-react.js](../master/tutorial/example5-react.js) - Refactor demonstrating more separation of container and presentational components.
+  * [tutorial/example6-react.js](../master/tutorial/example6-react.js) - Demonstrates the connect binding. Currently supports React Components, more coming soon!
 
 You can open the corresponding html pages (e.g. [tutorial/index-example4.html](../master/tutorial/index-example4.html) )in the tutorial to see it in action. Precompiled with [browserify](https://github.com/substack/browserify)
 
@@ -246,11 +247,7 @@ STATUS
 
  * createStore
  * combineReducers
-
-TODO
-====
-
- * connect
+ * connect 
 
 CONTRIB
 =======
